@@ -56,9 +56,19 @@ async function setup() {
     const dataArray = new Uint8Array(bufferLength);
     const sampleRate = audioContext.sampleRate;
     const nyquist = sampleRate / 2;
-
+    let scaleFactor = 0;
+    
     // Initialize peak positions
     const peakPositions = new Float32Array(bufferLength).fill(0);
+
+    // Event listeners for buttons
+    document.getElementById('increase').addEventListener('click', () => {
+        scaleFactor += 50; // Increase scale factor
+    });
+
+    document.getElementById('decrease').addEventListener('click', () => {
+        scaleFactor -= 50; // Decrease scale factor
+    });
 
     function draw() {
         requestAnimationFrame(draw);
@@ -95,7 +105,7 @@ async function setup() {
             
             // Add more scaling
             scaledHeight *= 5.0;
-            scaledHeight -= 150;
+            scaledHeight -= ( 150 + scaleFactor );
             
             if(scaledHeight < 0) {
                 scaledHeight = 0;
