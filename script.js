@@ -44,7 +44,7 @@ async function setup() {
     // Create an AudioContext and an AnalyserNode
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;  // Adjust FFT size for better frequency resolution
+    analyser.fftSize = 512;  // Adjust FFT size for better frequency resolution
     analyser.minDecibels = -150;
     analyser.maxDecibels = -10;
     
@@ -55,12 +55,12 @@ async function setup() {
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     const sampleRate = audioContext.sampleRate;
-    const nyquist = sampleRate / 2;
+    const nyquist = sampleRate / 4;
     let heightFactor = 0;
-    let scaleFactor = 1.1;
+    let scaleFactor = 2.1;
     
     // Initialize peak positions
-    const peakPositions = new Float32Array(bufferLength).fill(0);
+    const peakPositions = new Float32Array(bufferLength / 2).fill(0);
 
     // Event listeners for buttons
     document.getElementById('increaseHeight').addEventListener('click', () => {
@@ -87,7 +87,7 @@ async function setup() {
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const barWidth = (canvas.width / bufferLength) * 1.0;
+        const barWidth = (canvas.width / (bufferLength / 2)) * 1.0;
         let barHeight;
         let x = 0;
         
@@ -103,18 +103,18 @@ async function setup() {
         //console.log("Avg:" + average);
         console.log(dataArray);
         
-        for (let i = 0; i < bufferLength; i++) {
+        for (let i = 0; i < bufferLength / 2; i++) {
             barHeight = dataArray[i];
             
             // Apply logarithmic scaling to the bar height
             //const scaledHeight = Math.log1p(barHeight) * 200;
             
             // Apply exponential scaling to the bar height
-            let scaledHeight = Math.pow(barHeight / 255, 2) * canvas.height;
+            let scaledHeight = Math.pow(barHeight / 255, 2) * scaleFactor * canvas.height;
             
             // Add more scaling
-            scaledHeight *= ( 5.0 * scaleFactor);
-            scaledHeight -= ( 150 + heightFactor );
+            //scaledHeight *= ( 5.0 + scaleFactor  );
+            scaledHeight -= ( 200 + heightFactor );
             
             if(scaledHeight < 0) {
                 scaledHeight = 0;
