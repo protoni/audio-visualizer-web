@@ -56,18 +56,27 @@ async function setup() {
     const dataArray = new Uint8Array(bufferLength);
     const sampleRate = audioContext.sampleRate;
     const nyquist = sampleRate / 2;
-    let scaleFactor = 0;
+    let heightFactor = 0;
+    let scaleFactor = 1.1;
     
     // Initialize peak positions
     const peakPositions = new Float32Array(bufferLength).fill(0);
 
     // Event listeners for buttons
-    document.getElementById('increase').addEventListener('click', () => {
-        scaleFactor += 50; // Increase scale factor
+    document.getElementById('increaseHeight').addEventListener('click', () => {
+        heightFactor -= 50; // Increase height
     });
 
-    document.getElementById('decrease').addEventListener('click', () => {
-        scaleFactor -= 50; // Decrease scale factor
+    document.getElementById('decreaseHeight').addEventListener('click', () => {
+        heightFactor += 50; // Decrease height
+    });
+    
+    document.getElementById('increaseSensitivity').addEventListener('click', () => {
+        scaleFactor *= 1.1; // Increase scale factor
+    });
+
+    document.getElementById('decreaseSensitivity').addEventListener('click', () => {
+        scaleFactor /= 1.1; // Decrease scale factor
     });
 
     function draw() {
@@ -86,12 +95,12 @@ async function setup() {
         let combined = 0;
         let average = 0;
         // Calculate average amplitude
-        for (let i = 0; i < bufferLength; i++) {
-            combined += dataArray[i];
-        }
-        average = combined / dataArray.length;
+        //for (let i = 0; i < bufferLength; i++) {
+        //    combined += dataArray[i];
+        //}
+        //average = combined / dataArray.length;
         
-        console.log("Avg:" + average);
+        //console.log("Avg:" + average);
         console.log(dataArray);
         
         for (let i = 0; i < bufferLength; i++) {
@@ -104,8 +113,8 @@ async function setup() {
             let scaledHeight = Math.pow(barHeight / 255, 2) * canvas.height;
             
             // Add more scaling
-            scaledHeight *= 5.0;
-            scaledHeight -= ( 150 + scaleFactor );
+            scaledHeight *= ( 5.0 * scaleFactor);
+            scaledHeight -= ( 150 + heightFactor );
             
             if(scaledHeight < 0) {
                 scaledHeight = 0;
