@@ -101,7 +101,7 @@ async function setup() {
         //average = combined / dataArray.length;
         
         //console.log("Avg:" + average);
-        console.log(dataArray);
+        //console.log(dataArray);
         
         for (let i = 0; i < bufferLength / 2; i++) {
             barHeight = dataArray[i];
